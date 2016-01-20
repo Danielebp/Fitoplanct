@@ -16,7 +16,7 @@ CSVManager::CSVManager(string filename) : ifile(filename.c_str()) {
 
 CSVManager::~CSVManager() {
 	// TODO Auto-generated destructor stub
-	delete ifile;
+	//delete ifile;
 }
 
 void CSVManager::print(){

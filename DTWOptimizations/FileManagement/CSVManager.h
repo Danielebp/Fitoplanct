@@ -8,14 +8,10 @@
 #ifndef CSVMANAGER_H_
 #define CSVMANAGER_H_
 
-#include<iostream>
-#include<string>
+#include "../Common.h"
 #include<sstream>
 #include<fstream>
-#include<vector>
-#include<cstdlib>
 
-using namespace std;
 
 
 class CSVManager {
