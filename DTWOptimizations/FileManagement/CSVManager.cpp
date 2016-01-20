@@ -9,19 +9,8 @@
 
 
 
-CSVManager::CSVManager(string filename) : ifile(filename.c_str()) {
-	// TODO Auto-generated constructor stub
+void print(vector<vector<float> > values){
 
-}
-
-CSVManager::~CSVManager() {
-	// TODO Auto-generated destructor stub
-	//delete ifile;
-}
-
-void CSVManager::print(){
-
-	vector<vector<float> > values = read();
 
 	for(unsigned int i = 0; i< values.size(); ++i){
 		for(unsigned int j = 0; j< (values[i]).size(); ++j){
@@ -33,7 +22,9 @@ void CSVManager::print(){
 }
 
 
-vector<vector<float> > CSVManager::read(){
+vector<vector<float> > read(string filename){
+
+	ifstream ifile(filename.c_str());
 
 	vector<float> tokens;
 	vector<vector<float> > values;

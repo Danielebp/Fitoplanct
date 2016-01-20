@@ -13,19 +13,7 @@
 #include<fstream>
 
 
+vector<vector<float> > read(string filename);
 
-class CSVManager {
-
-public:
-
-	ifstream ifile;
-
-	CSVManager(string filename);
-	virtual ~CSVManager();
-
-	void print();
-
-	vector<vector<float> > read();
-};
 
 #endif /* CSVMANAGER_H_ */
