@@ -9,12 +9,12 @@
 
 
 
-void print(vector<vector<float> > values){
+void print(vector<vector<float> > *values){
 
 
-	for(unsigned int i = 0; i< values.size(); ++i){
-		for(unsigned int j = 0; j< (values[i]).size(); ++j){
-			cout<<values[i][j]<<"\t";
+	for(unsigned int i = 0; i< (*values).size(); ++i){
+		for(unsigned int j = 0; j< ((*values)[i]).size(); ++j){
+			cout<<(*values)[i][j]<<"\t";
 		}
 		cout<<endl;
 		cout.flush();
@@ -22,12 +22,11 @@ void print(vector<vector<float> > values){
 }
 
 
-vector<vector<float> > read(string filename){
+vector<vector<float> > *read(string filename, vector<vector<float> > *output){
 
 	ifstream ifile(filename.c_str());
 
 	vector<float> tokens;
-	vector<vector<float> > values;
 
 	string value;
 	string temp;
@@ -41,9 +40,9 @@ vector<vector<float> > read(string filename){
 			 tokens.push_back(f);
 		 }
 
-		 values.push_back(tokens);
+		 (*output).push_back(tokens);
 		 tokens.erase(tokens.begin(), tokens.end());
 	}
 
-	return values;
+	return output;
 };

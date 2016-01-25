@@ -12,8 +12,8 @@
 #include<sstream>
 #include<fstream>
 
-
-vector<vector<float> > read(string filename);
+void print(vector<vector<float> > *values);
+vector<vector<float> > *read(string filename, vector<vector<float> > *output);
 
 
 #endif /* CSVMANAGER_H_ */

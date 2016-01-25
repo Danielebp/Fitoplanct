@@ -8,18 +8,48 @@
 
 #include "FileManagement/CSVManager.h"
 #include "DTWAlgorithms/DTW.h"
+#include <string>
+#include <sstream>
+#include <ctime>
 
 int main(void){
 
 
-	vector<vector<float> > serie0 = read("matriz_0.csv");
-	vector<vector<float> > serie1 = read("matriz_1.csv");
+	const int N=10;
+
+	vector<vector<float> > series[N];
+
+	ostringstream bla;
+
+	for(int i = 0; i< N; i++){
+		bla<<i;
+		read("especie1/matriz_"+bla.str()+".csv", &series[i]);
+		bla.str("");
+	}
 
 
-	float diff = simpleDTW(serie0,serie1);
+	float diff[N][N];
 
-	cout << diff << endl;
+	clock_t t1,t2;
 
+	t1=clock();
+
+	for(int i = 0; i<N; i++){
+		for(int j = 0; j<N; j++){
+			diff[i][j] = simpleDTW(&series[i],&series[j]);
+		}
+	}
+
+	t2 = clock();
+
+	cout << "\t time: "<< ((float)t2-(float)t1)/1000<< endl;
+
+	for(int i = 0; i<N; i++){
+		for(int j = 0; j<N; j++){
+			cout<<diff[i][j]<<"\t";
+		}
+		cout<<endl;
+	}
 
 
 	return 0;
