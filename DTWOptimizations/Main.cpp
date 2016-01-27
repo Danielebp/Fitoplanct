@@ -17,7 +17,7 @@ int main(void){
 
 	const int N=10;
 
-	vector<vector<float> > series[N];
+	vector<vector<long double> > series[N];
 
 	ostringstream bla;
 
@@ -36,7 +36,7 @@ int main(void){
 
 	for(int i = 0; i<N; i++){
 		for(int j = 0; j<N; j++){
-			diff[i][j] = simpleDTW(&series[i],&series[j]);
+			diff[i][j] = simpleDTW(&series[i],&series[j],2);
 		}
 	}
 

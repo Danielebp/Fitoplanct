@@ -9,7 +9,7 @@
 
 
 
-void print(vector<vector<float> > *values){
+void print(vector<vector<long double> > *values){
 
 
 	for(unsigned int i = 0; i< (*values).size(); ++i){
@@ -22,11 +22,11 @@ void print(vector<vector<float> > *values){
 }
 
 
-vector<vector<float> > *read(string filename, vector<vector<float> > *output){
+vector<vector<long double> > *read(string filename, vector<vector<long double> > *output){
 
 	ifstream ifile(filename.c_str());
 
-	vector<float> tokens;
+	vector<long double> tokens;
 
 	string value;
 	string temp;
@@ -36,7 +36,7 @@ vector<vector<float> > *read(string filename, vector<vector<float> > *output){
 		 stringstream ss(value);
 
 		 while(getline(ss,temp,';')) {
-			 float f = std::atof(temp.c_str());
+			 long double f = std::atof(temp.c_str());
 			 tokens.push_back(f);
 		 }
 
