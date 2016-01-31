@@ -12,8 +12,18 @@
 #include <climits>
 #include <cmath>
 
-inline long double distancia(vector<long double> *s, vector<long double> *t, int numCols){
-	long double d = 0;
+
+inline double distancia(double *s, double *t, int numCols){
+	double d = 0;
+	for (int i = 0; i <numCols ; ++i) {
+		d += (s[i]-t[i])*(s[i]-t[i]);
+	}
+	return sqrt(d);
+}
+
+
+inline  double distancia(vector< double> *s, vector< double> *t, int numCols){
+	 double d = 0;
 
 	if(numCols==0)numCols=(*s).size();
 
@@ -27,13 +37,13 @@ inline long double distancia(vector<long double> *s, vector<long double> *t, int
 	return d;*/
 }
 
-inline long double min(long double f1, long double f2, long double f3){
+inline  double min( double f1,  double f2,  double f3){
 	if(f2<f1)f1=f2;
 	if(f3<f1)f1=f3;
 	return f1;
 }
 
-inline long double minMod(long double** DTW, int i, int j, int w){
+inline  double minMod( double** DTW, int i, int j, int w){
 
 	long double min = DTW[i-1][j-1];
 	if(abs(i-1-j)<=w && DTW[i-1][j]<min) min = DTW[i-1][j];
@@ -41,8 +51,11 @@ inline long double minMod(long double** DTW, int i, int j, int w){
 	return min;
 }
 
-long double simpleDTW(vector<vector<long double> > *s, vector<vector<long double> > *t, int numCols =0);
+//# using float pointer
+double simpleDTW( double ** s, const int size_s, double **t, const int size_t, int numCols);
 
-long double windowedDTW(vector<vector<long double> > *s, vector<vector<long double> > *t, int w);
+//# using vector
+double simpleDTW(vector<vector<double> > *s, vector<vector<double> > *t, int numCols =0);
+double windowedDTW(vector<vector<double> > *s, vector<vector<double> > *t, int w);
 
 #endif /* DTW_H_ */

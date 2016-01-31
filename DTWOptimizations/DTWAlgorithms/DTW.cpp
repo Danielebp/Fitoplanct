@@ -7,15 +7,49 @@
 
 #include "DTW.h"
 
-long double simpleDTW(vector<vector<long double> > *s, vector<vector<long double> > *t, int numCols){
+//# using float pointer
+
+double simpleDTW( double ** s, const int size_s, double **t, const int size_t, int numCols){
 	long double custo = 0;
 	long double result = 0;
+
+
+	double DTW[size_s+1][size_t+1];
+
+	for(int i =1; i<= size_s; ++i){
+		DTW[i][0]= INT_MAX;
+	}
+	for(int i =1; i<= size_t; ++i){
+		DTW[0][i]= INT_MAX;
+	}
+
+	DTW[0][0]=0;
+
+	for (int i = 1; i <= size_s; ++i) {
+		for (int j = 1; j <= size_t; ++j) {
+			custo = distancia(s[i-1],t[j-1], numCols);
+			DTW[i][j] = custo + min(DTW[i-1][j], DTW[i][j-1], DTW[i-1][j-1]);
+		}
+	}
+
+	result = DTW[size_s][size_t];
+
+	return result;
+}
+
+
+
+//# using vector
+
+double simpleDTW(vector<vector<double> > *s, vector<vector<double> > *t, int numCols){
+	double custo = 0;
+	double result = 0;
 
 	const int size_s = (*s).size();
 	const int size_t = (*t).size();
 
 
-	long double DTW[size_s+1][size_t+1];
+	double DTW[size_s+1][size_t+1];
 
 	for(int i =1; i<= size_s; ++i){
 		DTW[i][0]= INT_MAX;
@@ -41,9 +75,9 @@ long double simpleDTW(vector<vector<long double> > *s, vector<vector<long double
 	return result;
 }
 
-long double windowedDTW(vector<vector<long double> > *s, vector<vector<long double> > *t, int w){
-	long double custo = 0;
-	long double result = 0;
+double windowedDTW(vector<vector<double> > *s, vector<vector<double> > *t, int w){
+	double custo = 0;
+	double result = 0;
 
 	const int size_s = (*s).size();
 	const int size_t = (*t).size();
@@ -55,9 +89,9 @@ long double windowedDTW(vector<vector<long double> > *s, vector<vector<long doub
 
 	//float DTW[size_s+1][size_t+1];
 	cin>>custo;
-	long double **DTW = (long double**)malloc(sizeof(long double*)*(size_s+1));
+	double **DTW = (double**)malloc(sizeof(double*)*(size_s+1));
 	for(int i =1; i<= size_s; ++i){
-		DTW[i] = (long double*)malloc(sizeof(long double)*(size_t+1));
+		DTW[i] = (double*)malloc(sizeof(double)*(size_t+1));
 		DTW[i][0]= INT_MAX;
 	}
 	for(int i =1; i<= size_t; ++i){

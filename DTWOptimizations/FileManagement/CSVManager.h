@@ -12,8 +12,12 @@
 #include<sstream>
 #include<fstream>
 
-void print(vector<vector<long double> > *values);
-vector<vector<long double> > *read(string filename, vector<vector<long double> > *output);
+void print(vector<vector<double> > *values);
+vector<vector<double> > *read(string filename, vector<vector<double> > *output);
 
+int getNumberOfCols(string filename);
+int getNumberOfLines(string filename);
+double** read(string filename, double **output, int nLines, int nCols);
+void print(double **values, int nLines, int nCols);
 
 #endif /* CSVMANAGER_H_ */
