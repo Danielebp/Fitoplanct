@@ -11,29 +11,103 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include "timer.h"
 
-int main(void){
+#include "omp.h"
 
+int rodaComVector(int N, bool imprime, int nCols=2){
 
-	int N=1000;
+	//************** declarations **************
+	double start, finish, elapsed;
 
-	const int nCols = 2;
+	vector<vector<double> > series[N];
+	double **diff;
 
-	int * nLines = (int*)malloc(N*sizeof(int));
+	ostringstream int2str;
 
+	//************** allocations **************
+	diff = (double**)malloc(N * sizeof*diff);
 
-	double ***series;
-
-	if ((series = (double***)malloc(N*sizeof *series)) == NULL) {
-		perror("malloc 1");
-		return -1;
+	for (int i = 0; i < N; ++i) {
+		diff[i]=(double*)malloc((N-i)*sizeof(double));
 	}
 
+
+	//************** read **************
+	for(int i = 0; i< N; i++){
+		int2str<<i;
+		read("especie1/matriz_"+int2str.str()+".csv", &series[i]);
+		int2str.str("");
+	}
+
+
+	//************** DTW **************
+
+	GET_TIME(start);
+
+#pragma omp parallel for
+	for(int i = 0; i<N; i++){
+		for(int j = i; j<N; j++){
+			diff[i][j-i] = simpleDTW(&series[i],&series[j],nCols);
+		}
+	}
+
+	GET_TIME(finish);
+
+
+	//************** time **************
+	elapsed = finish - start;
+
+	cout << "\t time: "<< elapsed<< endl;
+
+
+	//************** output **************
+	if(imprime){
+		for(int i = 0; i<N; i++){
+			for(int j = 0; j<N-i; j++){
+				cout<<diff[i][j]<<"\t";
+			}
+			cout<<endl;
+		}
+	}
+
+
+	//************** free **************
+	for(int i = 0; i< N; i++){
+		free(diff[i]);
+	}
+	free(diff);
+
+	return 0;
+
+}
+
+int rodaComPointer(int N, bool imprime, int nCols=2){
+
+	//************** declarations **************
+	double start, finish, elapsed;
+	int * nLines;
+	double ***series;
 
 	ostringstream bla;
 	string filename;
 
 
+	//************** allocation **************
+	nLines = (int*)malloc(N*sizeof(int));
+	if ((series = (double***)malloc(N*sizeof *series)) == NULL) {
+		perror("malloc 1");
+		return -1;
+	}
+
+	double **diff = (double**)malloc(N * sizeof*diff);
+
+	for (int i = 0; i < N; ++i) {
+		diff[i]=(double*)malloc((N-i)*sizeof(double));
+	}
+
+
+	//************** read **************
 	for(int i = 0; i< N; i++){
 		bla<<i;
 
@@ -50,70 +124,50 @@ int main(void){
 		bla.str("");
 	}
 
-	double **diff = (double**)malloc(N * sizeof*diff);
+	//************** DTW **************
+	GET_TIME(start);
 
-	for (int i = 0; i < N; ++i) {
-		diff[i]=(double*)malloc(N*sizeof(double));
-	}
-
-	clock_t t1,t2;
-
-	t1=clock();
-
+#pragma omp parallel for
 	for(int i = 0; i<N; i++){
-		for(int j = 0; j<N; j++){
-			diff[i][j] = simpleDTW(series[i],nLines[i],series[j],nLines[j],nCols);
+		for(int j = i; j<N; j++){
+			diff[i][j-i] = simpleDTW(series[i],nLines[i],series[j],nLines[j],nCols);
 		}
 	}
 
-	t2 = clock();
+	GET_TIME(finish);
 
-	cout << "\t time: "<< ((float)t2-(float)t1)/1000<< endl;
+	//************** time **************
+	elapsed = finish - start;
+	cout << "\t time: "<< elapsed<< endl;
 
-	/*for(int i = 0; i<N; i++){
-		for(int j = 0; j<N; j++){
-			cout<<diff[i][j]<<"\t";
+	//************** output **************
+	if(imprime){
+		for(int i = 0; i<N; i++){
+			for(int j = 0; j<N-i; j++){
+				cout<<diff[i][j]<<"\t";
+			}
+			cout<<endl;
 		}
-		cout<<endl;
-	}*/
+	}
 
-
-	/*int N=1000;
-
-	vector<vector<double> > series[N];
-
-	ostringstream bla;
-
+	//************** free **************
 	for(int i = 0; i< N; i++){
-		bla<<i;
-		read("especie1/matriz_"+bla.str()+".csv", &series[i]);
-		bla.str("");
-	}
-
-
-	//double diff[N][N];
-	double **diff = (double**)malloc(N * sizeof*diff);
-
-	for (int i = 0; i < N; ++i) {
-		diff[i]=(double*)malloc(N*sizeof(double));
-	}
-
-	clock_t t1,t2;
-
-	t1=clock();
-
-	for(int i = 0; i<N; i++){
-		for(int j = 0; j<N; j++){
-			diff[i][j] = simpleDTW(&series[i],&series[j],2);
+		for (int j = 0; j < nLines[i]; ++j) {
+			free(series[i][j]);
 		}
+		free(series[i]);
+		free(diff[i]);
 	}
-
-	t2 = clock();
-
-	cout << "\t time: "<< ((float)t2-(float)t1)/1000<< endl;
-
-	*/
-
+	free(series);
+	free(diff);
 
 	return 0;
+}
+
+int main(void){
+
+	int erro = rodaComVector(1000, false, 2);
+	erro += rodaComPointer(1000, false, 2);
+
+	return erro;
 }
