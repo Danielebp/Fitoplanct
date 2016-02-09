@@ -12,6 +12,7 @@
 #include <sstream>
 #include <ctime>
 #include "timer.h"
+#include "CincoEspecies.h"
 
 #include "omp.h"
 
@@ -45,7 +46,7 @@ int rodaComVector(int N, bool imprime, int nCols=2){
 
 	GET_TIME(start);
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int i = 0; i<N; i++){
 		for(int j = i; j<N; j++){
 			diff[i][j-i] = simpleDTW(&series[i],&series[j],nCols);
@@ -127,7 +128,7 @@ int rodaComPointer(int N, bool imprime, int nCols=2){
 	//************** DTW **************
 	GET_TIME(start);
 
-#pragma omp parallel for
+//#pragma omp parallel for
 	for(int i = 0; i<N; i++){
 		for(int j = i; j<N; j++){
 			diff[i][j-i] = simpleDTW(series[i],nLines[i],series[j],nLines[j],nCols);
@@ -166,8 +167,8 @@ int rodaComPointer(int N, bool imprime, int nCols=2){
 
 int main(void){
 
-	int erro = rodaComVector(1000, false, 2);
-	erro += rodaComPointer(1000, false, 2);
+	//int erro = rodaComVector(1000, false, 2);
+	//erro += rodaComPointer(1000, false, 2);
 
-	return erro;
+	return rodaCinco(true, 2);
 }
