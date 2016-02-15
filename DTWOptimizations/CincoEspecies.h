@@ -92,6 +92,7 @@ int rodaCinco(bool imprime, int nCols=2){
 				for (int j = 0; j < nFiles[t]; ++j) {
 					simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
 				}
+				//cout<<s<<" - "<<t<<" - "<<i<<endl;
 			}
 		}
 		free(series[s]);
