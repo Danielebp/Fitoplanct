@@ -88,11 +88,10 @@ int rodaCinco(bool imprime, int nCols=2){
 	for (int s = 0; s < nEsp; ++s) {
 		for (int i = 0; i < nFiles[s]; ++i) {
 			for (int t = s; t < nEsp; ++t) {
+				//criar um processo para cada for desse?
 				for (int j = 0; j < nFiles[t]; ++j) {
-					cout<< i << " - "<<j<<endl;
-					if(!(i==833 && j==525 && s==0 && t==1))simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
+					simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
 				}
-				//cout<<t<<endl;
 			}
 		}
 		free(series[s]);
@@ -117,16 +116,10 @@ int rodaCinco(bool imprime, int nCols=2){
 	}*/
 
 	//************** free **************
-	/*for(int i = 0; i< N; i++){
-		for (int j = 0; j < nLines[i]; ++j) {
-			free(series[i][j]);
-		}
-		free(series[i]);
-		free(diff[i]);
-	}
+
 	free(series);
-	free(diff);
-*/
+	free(nLines);
+
 	return 0;
 }
 
