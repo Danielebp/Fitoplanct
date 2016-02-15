@@ -18,11 +18,11 @@
 
 
 
-int rodaCinco(bool imprime, int nCols=2){
+int roda22(bool imprime, int nCols=2){
 
 	//************** declarations **************
 	double start, finish, elapsed;
-	int nEsp = 5;
+	int nEsp = 22;
 	int ** nLines;
 	double ****series;
 
@@ -84,6 +84,7 @@ int rodaCinco(bool imprime, int nCols=2){
 	series = (double****)malloc(nEsp*sizeof *series);
 
 	for (int i = 0; i < nEsp; ++i) {
+		//cout<<i<<endl;
 		nLines[i] = (int*)malloc(nFiles[i]*sizeof*nLines[i]);
 		series[i] = (double***)malloc(nFiles[i]*sizeof *series[i]);
 	}

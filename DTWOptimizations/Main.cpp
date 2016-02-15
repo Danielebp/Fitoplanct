@@ -13,6 +13,7 @@
 #include <ctime>
 #include "timer.h"
 #include "CincoEspecies.h"
+#include "22Especies.h"
 
 #include "omp.h"
 
@@ -170,5 +171,5 @@ int main(void){
 	//int erro = rodaComVector(1000, false, 2);
 	//erro += rodaComPointer(1000, false, 2);
 
-	return rodaCinco(true, 2);
+	return roda22(true, 2);
 }
