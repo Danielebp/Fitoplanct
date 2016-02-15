@@ -22,7 +22,7 @@ int roda22(bool imprime, int nCols=2){
 
 	//************** declarations **************
 	double start, finish, elapsed;
-	int nEsp = 22;
+	int nEsp = 1;
 	int ** nLines;
 	double ****series;
 
@@ -30,7 +30,7 @@ int roda22(bool imprime, int nCols=2){
 	int nFiles[nEsp];
 
 	locations[0]="Especies/especie1/";
-	locations[1]="Especies/especie2/";
+	/*locations[1]="Especies/especie2/";
 	locations[2]="Especies/especie3/";
 	locations[3]="Especies/especie4/";
 	locations[4]="Especies/especie5/";
@@ -50,10 +50,10 @@ int roda22(bool imprime, int nCols=2){
 	locations[18]="Especies/especie19/";
 	locations[19]="Especies/especie20/";
 	locations[20]="Especies/especie21/";
-	locations[21]="Especies/especie22/";
+	locations[21]="Especies/especie22/";*/
 
 	nFiles[0]=1000;
-	nFiles[1]=1000;
+	/*nFiles[1]=1000;
 	nFiles[2]=800;
 	nFiles[3]=1600;
 	nFiles[4]=1000;
@@ -73,7 +73,7 @@ int roda22(bool imprime, int nCols=2){
 	nFiles[18]=2000;
 	nFiles[19]=2000;
 	nFiles[20]=2000;
-	nFiles[21]=2000;
+	nFiles[21]=2000;*/
 
 	ostringstream bla;
 	string filename;
@@ -121,14 +121,18 @@ int roda22(bool imprime, int nCols=2){
 	GET_TIME(start);
 
 	for (int s = 0; s < nEsp; ++s) {
-		for (int i = 0; i < nFiles[s]; ++i) {
-			for (int t = s; t < nEsp; ++t) {
+		for (int t = s; t < nEsp; ++t) {
+			//cout<<"file_"<<s<<"_"<<t<<endl;
+			for (int i = 0; i < nFiles[s]; ++i) {
 				//criar um processo para cada for desse?
 				for (int j = 0; j < nFiles[t]; ++j) {
-					simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
+					//cout<<simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols)<<",";
+					printf("\"%.3f\"",simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols));
+					if(j<nFiles[t]-1)printf("\,");
 				}
-				//cout<<s<<" - "<<t<<" - "<<i<<endl;
+			cout<<endl;
 			}
+			//cout<<endl<<endl;
 		}
 		free(series[s]);
 		free(nLines[s]);
