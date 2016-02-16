@@ -12,9 +12,8 @@
 #include <sstream>
 #include <ctime>
 #include "timer.h"
-
-#include "omp.h"
-
+#include <stdio.h>
+#include <iomanip>
 
 
 
@@ -22,60 +21,89 @@ int roda22(bool imprime, int nCols=2){
 
 	//************** declarations **************
 	double start, finish, elapsed;
-	int nEsp = 1;
+	int nEsp = 5;
 	int ** nLines;
 	double ****series;
+
+	FILE * fp;
 
 	string locations[nEsp];
 	int nFiles[nEsp];
 
-	locations[0]="Especies/especie1/";
-	/*locations[1]="Especies/especie2/";
-	locations[2]="Especies/especie3/";
-	locations[3]="Especies/especie4/";
-	locations[4]="Especies/especie5/";
-	locations[5]="Especies/especie6/";
-	locations[6]="Especies/especie7/";
-	locations[7]="Especies/especie8/";
-	locations[8]="Especies/especie9/";
-	locations[9]="Especies/especie10/";
-	locations[10]="Especies/especie11/";
-	locations[11]="Especies/especie12/";
-	locations[12]="Especies/especie13/";
-	locations[13]="Especies/especie14/";
-	locations[14]="Especies/especie15/";
-	locations[15]="Especies/especie16/";
-	locations[16]="Especies/especie17/";
-	locations[17]="Especies/especie18/";
-	locations[18]="Especies/especie19/";
-	locations[19]="Especies/especie20/";
-	locations[20]="Especies/especie21/";
-	locations[21]="Especies/especie22/";*/
+	switch (nEsp) {
+		case 22:
+			locations[21]="Especies/especie22/";
+			nFiles[21]=2000;
+		case 21:
+			locations[20]="Especies/especie21/";
+			nFiles[20]=2000;
+		case 20:
+			locations[19]="Especies/especie20/";
+			nFiles[19]=2000;
+		case 19:
+			locations[18]="Especies/especie19/";
+			nFiles[18]=2000;
+		case 18:
+			locations[17]="Especies/especie18/";
+			nFiles[17]=2000;
+		case 17:
+			locations[16]="Especies/especie17/";
+			nFiles[16]=2000;
+		case 16:
+			locations[15]="Especies/especie16/";
+			nFiles[15]=2000;
+		case 15:
+			locations[14]="Especies/especie15/";
+			nFiles[14]=2000;
+		case 14:
+			locations[13]="Especies/especie14/";
+			nFiles[13]=2000;
+		case 13:
+			locations[12]="Especies/especie13/";
+			nFiles[12]=2000;
+		case 12:
+			locations[11]="Especies/especie12/";
+			nFiles[11]=2000;
+		case 11:
+			locations[10]="Especies/especie11/";
+			nFiles[10]=2000;
+		case 10:
+			locations[9]="Especies/especie10/";
+			nFiles[9]=1000;
+		case 9:
+			locations[8]="Especies/especie9/";
+			nFiles[8]=1000;
+		case 8:
+			locations[7]="Especies/especie8/";
+			nFiles[7]=1000;
+		case 7:
+			locations[6]="Especies/especie7/";
+			nFiles[6]=1000;
+		case 6:
+			locations[5]="Especies/especie6/";
+			nFiles[5]=1000;
+		case 5:
+			locations[4]="Especies/especie5/";
+			nFiles[4]=1000;
+		case 4:
+			locations[3]="Especies/especie4/";
+			nFiles[3]=1600;
+		case 3:
+			locations[2]="Especies/especie3/";
+			nFiles[2]=800;
+		case 2:
+			locations[1]="Especies/especie2/";
+			nFiles[1]=1000;
+		case 1:
+			locations[0]="Especies/especie1/";
+			nFiles[0]=1000;
+			break;
+		default:
+			break;
+	}
 
-	nFiles[0]=1000;
-	/*nFiles[1]=1000;
-	nFiles[2]=800;
-	nFiles[3]=1600;
-	nFiles[4]=1000;
-	nFiles[5]=1000;
-	nFiles[6]=1000;
-	nFiles[7]=1000;
-	nFiles[8]=1000;
-	nFiles[9]=1000;
-	nFiles[10]=2000;
-	nFiles[11]=2000;
-	nFiles[12]=2000;
-	nFiles[13]=2000;
-	nFiles[14]=2000;
-	nFiles[15]=2000;
-	nFiles[16]=2000;
-	nFiles[17]=2000;
-	nFiles[18]=2000;
-	nFiles[19]=2000;
-	nFiles[20]=2000;
-	nFiles[21]=2000;*/
 
-	ostringstream bla;
+	ostringstream streamer;
 	string filename;
 
 
@@ -84,33 +112,24 @@ int roda22(bool imprime, int nCols=2){
 	series = (double****)malloc(nEsp*sizeof *series);
 
 	for (int i = 0; i < nEsp; ++i) {
-		//cout<<i<<endl;
 		nLines[i] = (int*)malloc(nFiles[i]*sizeof*nLines[i]);
 		series[i] = (double***)malloc(nFiles[i]*sizeof *series[i]);
 	}
 
 
-	/*double **diff = (double**)malloc(N * sizeof*diff);
-
-	for (int i = 0; i < N; ++i) {
-		diff[i]=(double*)malloc((N-i)*sizeof(double));
-	}*/
-
-
-
 	//************** read **************
 	for (int i = 0; i < nEsp; ++i) {
 		for (int j = 0; j < nFiles[i]; ++j) {
-			bla<<j;
+			streamer<<j;
 
-			filename = locations[i]+"matriz_"+bla.str()+".csv";
+			filename = locations[i]+"matriz_"+streamer.str()+".csv";
 			nLines[i][j] = getNumberOfLines(filename);
 
 			series[i][j] = (double**)malloc(nLines[i][j]*sizeof*series[i][j]);
 
 			read(filename, series[i][j], nLines[i][j], nCols);
 
-			bla.str("");
+			streamer.str("");
 		}
 
 	}
@@ -118,21 +137,41 @@ int roda22(bool imprime, int nCols=2){
 
 	//************** DTW **************
 
+
+	string result;
+	string line;
+	double diff;
+
 	GET_TIME(start);
 
 	for (int s = 0; s < nEsp; ++s) {
+		streamer.str("");
+		streamer<<(s+1);
+		filename = "result_"+streamer.str()+"_";
+
 		for (int t = s; t < nEsp; ++t) {
-			//cout<<"file_"<<s<<"_"<<t<<endl;
+			streamer.str("");
+			streamer<<(t+1);
+
+			result = filename+streamer.str()+ ".csv";
+
+			fp = fopen (result.c_str(), "w+");
+
 			for (int i = 0; i < nFiles[s]; ++i) {
-				//criar um processo para cada for desse?
+				line = "";
 				for (int j = 0; j < nFiles[t]; ++j) {
-					//cout<<simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols)<<",";
-					printf("\"%.3f\"",simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols));
-					if(j<nFiles[t]-1)printf("\,");
+
+					diff = simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
+					streamer.str("");
+					streamer << fixed << setprecision(3) <<(diff);
+
+					line = line + "\"" + streamer.str() + "\"";
+					if(j<nFiles[t]-1)line = line + "\,";
+					else line = line + "\n";
 				}
-			cout<<endl;
+				fprintf(fp, line.c_str());
 			}
-			//cout<<endl<<endl;
+			fclose(fp);
 		}
 		free(series[s]);
 		free(nLines[s]);
@@ -144,16 +183,6 @@ int roda22(bool imprime, int nCols=2){
 	//************** time **************
 	elapsed = finish - start;
 	cout << "\t time: "<< elapsed<< endl;
-
-	//************** output **************
-	/*if(imprime){
-		for(int i = 0; i<N; i++){
-			for(int j = 0; j<N-i; j++){
-				cout<<diff[i][j]<<"\t";
-			}
-			cout<<endl;
-		}
-	}*/
 
 	//************** free **************
 
