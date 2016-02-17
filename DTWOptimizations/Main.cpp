@@ -172,6 +172,7 @@ int main(void){
 	//int erro = rodaComVector(1000, false, 2);
 	//erro += rodaComPointer(1000, false, 2);
 
-	return roda22(true, 2);
-	//return master(true,22);
+	//return roda22(true, 2);
+	return master(true,22);
+	pthread_exit(NULL);
 }

@@ -34,14 +34,6 @@ Fila* pares;
 //funcao dos workers
 void *workerF (void *arg) {
 
-  //coloca id na queue
-
-  //espera dados
-
-  //testa se dado significa fim do trabalho
-
-  //executa DTWs
-
   q_elem elem;
   ostringstream streamer;
   string filename;
@@ -96,15 +88,10 @@ int master(bool imprime, int nColunas=2){
 	nCols = nColunas;
 	//************** declarations **************
 	double start, finish, elapsed;
-	int nEsp = 5;
-	int ** nLines;
-	double ****series;
+
 	pthread_t threads[NTHREADS];
 
-	FILE * fp;
-
 	string locations[nEsp];
-	int nFiles[nEsp];
 
 	switch (nEsp) {
 		case 22:
@@ -213,11 +200,6 @@ int master(bool imprime, int nColunas=2){
 
 	//************** DTW **************
 
-
-	string result;
-	string line;
-	double diff;
-
 	int N=1;
 	for (int i = nEsp; i > 0; --i) {
 		N *= i;
@@ -238,8 +220,6 @@ int master(bool imprime, int nColunas=2){
 			elem.t=t;
 			pares->Insere(elem);
 		}
-		//free(series[s]);
-		//free(nLines[s]);
 	}
 
 	for (int i = 0; i < NTHREADS; ++i) {
