@@ -14,6 +14,7 @@
 #include "timer.h"
 #include "CincoEspecies.h"
 #include "22Especies.h"
+#include "Parallel22.h"
 
 #include "omp.h"
 
@@ -172,4 +173,5 @@ int main(void){
 	//erro += rodaComPointer(1000, false, 2);
 
 	return roda22(true, 2);
+	//return master(true,22);
 }

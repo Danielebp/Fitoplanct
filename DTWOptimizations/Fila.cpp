@@ -13,6 +13,9 @@ Fila::Fila() {
 }
 
 Fila::~Fila() {
-	// TODO Auto-generated destructor stub
+	free(Buffer);
+	pthread_mutex_destroy(&mutex);
+	pthread_cond_destroy(&cond_prod);
+	pthread_cond_destroy(&cond_cons);
 }
 

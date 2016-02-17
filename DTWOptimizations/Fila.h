@@ -8,29 +8,48 @@
 #ifndef FILA_H_
 #define FILA_H_
 
+#include <string>
+#include <sstream>
+#include <ctime>
+#include <stdio.h>
+#include <iomanip>
+#include <pthread.h>
+#include "Common.h"
+
+
 //cria a estrutura de elem da fila
 typedef struct {
-   int s, d;
+   int s, t;
 } q_elem;
 
 class Fila {
 private:
 	q_elem* Buffer;
-	const int N;
+	int N;
 	int count;
 	int in;
 	int out;
+	pthread_mutex_t mutex;
+	pthread_cond_t cond_prod;
+	pthread_cond_t cond_cons;
 public:
 	Fila();
 
 	Fila(int n){
 		N = n;
-		Buffer = malloc(N*sizeof*q_elem);
+		Buffer = (q_elem*)malloc(N*sizeof(q_elem));
+		count=0;
+		in=0;
+		out=0;
+
+		pthread_mutex_init(&mutex, NULL);
+		pthread_cond_init (&cond_prod, NULL);
+		pthread_cond_init (&cond_cons, NULL);
 	}
 
 	virtual ~Fila();
 
-	void Insere (int item) {
+	void Insere (q_elem item) {
 		pthread_mutex_lock(&mutex);
 		while(count == N) {
 			pthread_cond_wait(&cond_prod, &mutex);
@@ -42,14 +61,14 @@ public:
 		pthread_mutex_unlock(&mutex);
 	}
 
-	int Retira (void) {
-		int item;
+	q_elem Retira (void) {
+		q_elem item;
 		pthread_mutex_lock(&mutex);
 		while(count == 0) {
 			pthread_cond_wait(&cond_cons, &mutex);
 		}
 		item = Buffer[out];
-		Buffer[out] = 0;
+		//Buffer[out] = ;
 		out = (out + 1) % N;
 		count--;
 		pthread_cond_signal(&cond_prod);

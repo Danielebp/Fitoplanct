@@ -6,42 +6,33 @@
  */
 
 
-#include "FileManagement/CSVManager.h"
-#include "DTWAlgorithms/DTW.h"
 #include <string>
 #include <sstream>
 #include <ctime>
-#include "timer.h"
 #include <stdio.h>
 #include <iomanip>
-
-
 #include <pthread.h>
-#include "omp.h"
+
+#include "FileManagement/CSVManager.h"
+#include "DTWAlgorithms/DTW.h"
+#include "timer.h"
+#include "Fila.h"
 
 
-#define NTHREADS  10
-
-//cria a estrutura de dados para armazenar os argumentos da thread
-typedef struct {
-   int idThread, nThreads;
-} t_Args;
+#define NTHREADS  4
 
 
+// variaveis globais
+const int nEsp = 5;
+int nCols = 2;
+int ** nLines;
+double ****series;
+int nFiles[nEsp];
+Fila* pares;
 
-//funcao da master
-void *mastaerF (void *arg) {
-  t_Args *args = (t_Args *) arg;
-
-  printf("Sou a thread %d de %d threads\n", args->idThread, args->nThreads);
-  free(arg);
-
-  pthread_exit(NULL);
-}
 
 //funcao dos workers
 void *workerF (void *arg) {
-  t_Args *args = (t_Args *) arg;
 
   //coloca id na queue
 
@@ -51,24 +42,64 @@ void *workerF (void *arg) {
 
   //executa DTWs
 
+  q_elem elem;
+  ostringstream streamer;
+  string filename;
+  string result;
+  string line;
+  FILE * fp;
+  float diff;
 
 
+  while(1){
 
-  printf("Sou a thread %d de %d threads\n", args->idThread, args->nThreads);
-  free(arg);
+  elem = pares->Retira();
+  if(elem.s<0) break;
+
+  streamer.str("");
+  streamer<<(elem.s+1);
+  filename = "result_"+streamer.str()+"_";
+
+  streamer.str("");
+  streamer<<(elem.t+1);
+
+  result = filename+streamer.str()+ ".csv";
+
+  fp = fopen (result.c_str(), "w+");
+
+
+  for (int i = 0; i < nFiles[elem.s]; ++i) {
+	  line = "";
+	  for (int j = 0; j < nFiles[elem.t]; ++j) {
+
+		  diff = simpleDTW(series[elem.s][i],nLines[elem.s][i],series[elem.t][j],nLines[elem.t][j],nCols);
+		  streamer.str("");
+		  streamer << fixed << setprecision(3) <<(diff);
+
+		  line = line + "\"" + streamer.str() + "\"";
+		  if(j<nFiles[elem.t]-1)line = line + "\,";
+		  else line = line + "\n";
+	  }
+	  fprintf(fp, line.c_str());
+  }
+  fclose(fp);
+
+  }
 
   pthread_exit(NULL);
 }
 
 
 
-int roda22(bool imprime, int nCols=2){
+int master(bool imprime, int nColunas=2){
 
+	nCols = nColunas;
 	//************** declarations **************
 	double start, finish, elapsed;
 	int nEsp = 5;
 	int ** nLines;
 	double ****series;
+	pthread_t threads[NTHREADS];
 
 	FILE * fp;
 
@@ -187,41 +218,39 @@ int roda22(bool imprime, int nCols=2){
 	string line;
 	double diff;
 
+	int N=1;
+	for (int i = nEsp; i > 0; --i) {
+		N *= i;
+	}
+
+	pares = new Fila(N);
+	q_elem elem;
+
+	for (int i = 0; i < NTHREADS; ++i) {
+			pthread_create(&threads[i], NULL, workerF, NULL);
+	}
+
 	GET_TIME(start);
 
 	for (int s = 0; s < nEsp; ++s) {
-		streamer.str("");
-		streamer<<(s+1);
-		filename = "result_"+streamer.str()+"_";
-
 		for (int t = s; t < nEsp; ++t) {
-			streamer.str("");
-			streamer<<(t+1);
-
-			result = filename+streamer.str()+ ".csv";
-
-			fp = fopen (result.c_str(), "w+");
-
-			for (int i = 0; i < nFiles[s]; ++i) {
-				line = "";
-				for (int j = 0; j < nFiles[t]; ++j) {
-
-					diff = simpleDTW(series[s][i],nLines[s][i],series[t][j],nLines[t][j],nCols);
-					streamer.str("");
-					streamer << fixed << setprecision(3) <<(diff);
-
-					line = line + "\"" + streamer.str() + "\"";
-					if(j<nFiles[t]-1)line = line + "\,";
-					else line = line + "\n";
-				}
-				fprintf(fp, line.c_str());
-			}
-			fclose(fp);
+			elem.s=s;
+			elem.t=t;
+			pares->Insere(elem);
 		}
-		free(series[s]);
-		free(nLines[s]);
+		//free(series[s]);
+		//free(nLines[s]);
 	}
 
+	for (int i = 0; i < NTHREADS; ++i) {
+		elem.s=-1;
+		elem.t=-1;
+		pares->Insere(elem);
+	}
+
+	for (int i = 0; i < NTHREADS; i++) {
+		pthread_join(threads[i], NULL);
+	}
 
 	GET_TIME(finish);
 
