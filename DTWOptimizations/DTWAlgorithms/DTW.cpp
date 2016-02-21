@@ -7,7 +7,6 @@
 
 #include "DTW.h"
 
-//# using float pointer
 
 double simpleDTW( double ** s, const int size_s, double **t, const int size_t, int numCols){
 	long double custo = 0;
@@ -31,7 +30,6 @@ double simpleDTW( double ** s, const int size_s, double **t, const int size_t, i
 			DTW[i][j] = custo + min(DTW[i-1][j], DTW[i][j-1], DTW[i-1][j-1]);
 		}
 	}
-
 	result = DTW[size_s][size_t];
 
 	return result;
@@ -63,11 +61,8 @@ double simpleDTW(vector<vector<double> > *s, vector<vector<double> > *t, int num
 	for (int i = 1; i <= size_s; ++i) {
 		for (int j = 1; j <= size_t; ++j) {
 			custo = distancia(&((*s)[i-1]),&((*t)[j-1]), numCols);
-			//custo = distancias[i-1][j-1];
-			//cout<<custo<<"\t";
 			DTW[i][j] = custo + min(DTW[i-1][j], DTW[i][j-1], DTW[i-1][j-1]);
 		}
-		//cout<<endl;
 	}
 
 	result = DTW[size_s][size_t];

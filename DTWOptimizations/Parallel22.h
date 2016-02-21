@@ -89,7 +89,7 @@ int master(bool imprime, int nColunas=2){
 	//************** declarations **************
 	double start, finish, elapsed;
 
-	pthread_t threads[NTHREADS];
+	pthread_t threads[NTHREADS-1];
 
 	string locations[nEsp];
 
@@ -170,6 +170,7 @@ int master(bool imprime, int nColunas=2){
 	string filename;
 
 
+
 	//************** allocation **************
 	nLines = (int**)malloc(nEsp*sizeof*nLines);
 	series = (double****)malloc(nEsp*sizeof *series);
@@ -208,11 +209,12 @@ int master(bool imprime, int nColunas=2){
 	pares = new Fila(N);
 	q_elem elem;
 
-	for (int i = 0; i < NTHREADS; ++i) {
+	for (int i = 0; i < NTHREADS-1; ++i) {
 			pthread_create(&threads[i], NULL, workerF, NULL);
 	}
 
 	GET_TIME(start);
+
 
 	for (int s = 0; s < nEsp; ++s) {
 		for (int t = s; t < nEsp; ++t) {
@@ -228,7 +230,9 @@ int master(bool imprime, int nColunas=2){
 		pares->Insere(elem);
 	}
 
-	for (int i = 0; i < NTHREADS; i++) {
+	workerF(NULL);
+
+	for (int i = 0; i < NTHREADS-1; i++) {
 		pthread_join(threads[i], NULL);
 	}
 

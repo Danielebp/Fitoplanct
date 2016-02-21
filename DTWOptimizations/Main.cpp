@@ -169,10 +169,8 @@ int rodaComPointer(int N, bool imprime, int nCols=2){
 
 int main(void){
 
-	//int erro = rodaComVector(1000, false, 2);
-	//erro += rodaComPointer(1000, false, 2);
 
 	//return roda22(true, 2);
-	return master(true,22);
+	return master(true,2);
 	pthread_exit(NULL);
 }
