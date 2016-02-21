@@ -81,9 +81,56 @@ void *workerF (void *arg) {
   pthread_exit(NULL);
 }
 
+//funcao dos workers
+void *master (void *arg) {
+
+  q_elem elem;
+  ostringstream streamer;
+  string filename;
+  string result;
+  string line;
+  FILE * fp;
+  float diff;
 
 
-int master(bool imprime, int nColunas=2){
+  while(1){
+
+  elem = pares->Retira();
+  if(elem.s<0) break;
+
+  streamer.str("");
+  streamer<<(elem.s+1);
+  filename = "result_"+streamer.str()+"_";
+
+  streamer.str("");
+  streamer<<(elem.t+1);
+
+  result = filename+streamer.str()+ ".csv";
+
+  fp = fopen (result.c_str(), "w+");
+
+
+  for (int i = 0; i < nFiles[elem.s]; ++i) {
+	  line = "";
+	  for (int j = 0; j < nFiles[elem.t]; ++j) {
+
+		  diff = simpleDTW(series[elem.s][i],nLines[elem.s][i],series[elem.t][j],nLines[elem.t][j],nCols);
+		  streamer.str("");
+		  streamer << fixed << setprecision(3) <<(diff);
+
+		  line = line + "\"" + streamer.str() + "\"";
+		  if(j<nFiles[elem.t]-1)line = line + "\,";
+		  else line = line + "\n";
+	  }
+	  fprintf(fp, line.c_str());
+  }
+  fclose(fp);
+
+  }
+
+}
+
+int rodaParallel(bool imprime, int nColunas=2){
 
 	nCols = nColunas;
 	//************** declarations **************
@@ -230,7 +277,7 @@ int master(bool imprime, int nColunas=2){
 		pares->Insere(elem);
 	}
 
-	workerF(NULL);
+	master(NULL);
 
 	for (int i = 0; i < NTHREADS-1; i++) {
 		pthread_join(threads[i], NULL);

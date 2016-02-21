@@ -171,6 +171,6 @@ int main(void){
 
 
 	//return roda22(true, 2);
-	return master(true,2);
+	return rodaParallel(true,2);
 	pthread_exit(NULL);
 }
