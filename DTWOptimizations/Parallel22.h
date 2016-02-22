@@ -23,7 +23,7 @@
 
 
 // variaveis globais
-const int nEsp = 5;
+const int nEsp = 22;
 int nCols = 2;
 int ** nLines;
 double ****series;
@@ -248,19 +248,21 @@ int rodaParallel(bool imprime, int nColunas=2){
 
 	//************** DTW **************
 
-	int N=1;
+	int N=0;
 	for (int i = nEsp; i > 0; --i) {
-		N *= i;
+		N += i;
 	}
 
 	pares = new Fila(N);
 	q_elem elem;
+	
+	GET_TIME(start);
 
 	for (int i = 0; i < NTHREADS-1; ++i) {
 			pthread_create(&threads[i], NULL, workerF, NULL);
 	}
 
-	GET_TIME(start);
+	//GET_TIME(start);
 
 
 	for (int s = 0; s < nEsp; ++s) {
