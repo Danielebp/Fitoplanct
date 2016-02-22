@@ -23,7 +23,7 @@
 
 
 // variaveis globais
-const int nEsp = 22;
+const int nEsp = 5;
 int nCols = 2;
 int ** nLines;
 double ****series;
@@ -32,7 +32,10 @@ Fila* pares;
 
 
 //funcao dos workers
-void *workerF (void *arg) {
+void *workerF (void * tid) {
+
+  int id = * (int *) tid;
+  free(tid);
 
   q_elem elem;
   ostringstream streamer;
@@ -41,6 +44,8 @@ void *workerF (void *arg) {
   string line;
   FILE * fp;
   float diff;
+
+  cout<<"thread: "<<id<<endl;
 
 
   while(1){
@@ -78,57 +83,12 @@ void *workerF (void *arg) {
 
   }
 
-  pthread_exit(NULL);
-}
-
-//funcao dos workers
-void *master (void *arg) {
-
-  q_elem elem;
-  ostringstream streamer;
-  string filename;
-  string result;
-  string line;
-  FILE * fp;
-  float diff;
-
-
-  while(1){
-
-  elem = pares->Retira();
-  if(elem.s<0) break;
-
-  streamer.str("");
-  streamer<<(elem.s+1);
-  filename = "result_"+streamer.str()+"_";
-
-  streamer.str("");
-  streamer<<(elem.t+1);
-
-  result = filename+streamer.str()+ ".csv";
-
-  fp = fopen (result.c_str(), "w+");
-
-
-  for (int i = 0; i < nFiles[elem.s]; ++i) {
-	  line = "";
-	  for (int j = 0; j < nFiles[elem.t]; ++j) {
-
-		  diff = simpleDTW(series[elem.s][i],nLines[elem.s][i],series[elem.t][j],nLines[elem.t][j],nCols);
-		  streamer.str("");
-		  streamer << fixed << setprecision(3) <<(diff);
-
-		  line = line + "\"" + streamer.str() + "\"";
-		  if(j<nFiles[elem.t]-1)line = line + "\,";
-		  else line = line + "\n";
-	  }
-	  fprintf(fp, line.c_str());
-  }
-  fclose(fp);
-
+  if(id>0){
+	  pthread_exit(NULL);
   }
 
 }
+
 
 int rodaParallel(bool imprime, int nColunas=2){
 
@@ -137,6 +97,7 @@ int rodaParallel(bool imprime, int nColunas=2){
 	double start, finish, elapsed;
 
 	pthread_t threads[NTHREADS-1];
+	int *tid ;
 
 	string locations[nEsp];
 
@@ -259,7 +220,9 @@ int rodaParallel(bool imprime, int nColunas=2){
 	GET_TIME(start);
 
 	for (int i = 0; i < NTHREADS-1; ++i) {
-			pthread_create(&threads[i], NULL, workerF, NULL);
+		tid = (int*)malloc(sizeof(int)); if(tid==NULL) { printf("--ERRO: malloc()\n"); exit(-1); }
+		*tid = i+1;
+		pthread_create(&threads[i], NULL, workerF, (void*)tid);
 	}
 
 	//GET_TIME(start);
@@ -278,8 +241,9 @@ int rodaParallel(bool imprime, int nColunas=2){
 		elem.t=-1;
 		pares->Insere(elem);
 	}
-
-	master(NULL);
+	tid = (int*)malloc(sizeof(int)); if(tid==NULL) { printf("--ERRO: malloc()\n"); exit(-1); }
+	*tid = 0;
+	workerF(tid);
 
 	for (int i = 0; i < NTHREADS-1; i++) {
 		pthread_join(threads[i], NULL);
