@@ -43,7 +43,7 @@ void *workerF (void * tid) {
   string result;
   string line;
   FILE * fp;
-  float diff;
+  double diff;
 
   cout<<"thread: "<<id<<endl;
 
